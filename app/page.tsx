@@ -1,0 +1,392 @@
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent } from "@/components/ui/card"
+import { Search, User, Menu, Star, Play } from "lucide-react"
+import Chatbot from "@/components/chatbot"
+import CartSidebar from "@/components/cart-sidebar"
+import Image from "next/image"
+import ableton from "@/public/ableton_logo_black.webp"
+import pioneer from "@/public/pioneer-dj.webp"
+import roland from "@/public/roland.webp"
+import universal from "@/public/ua_logo_stacked_black.webp"
+import waves from "@/public/waves-logo-black.webp"
+
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Navigation Header */}
+      <header className="border-none bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-sm">M</span>
+                </div>
+                <span className="font-bold text-xl">MusicLearn</span>
+              </div>
+              <nav className="hidden md:flex items-center gap-6">
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Courses
+                </a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Products
+                </a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                  About
+                </a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Contact
+                </a>
+              </nav>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-2 bg-muted rounded-lg px-3 py-1 w-80">
+                <Search className="w-4 h-4 border-none text-muted-foreground" />
+                <Input
+                  placeholder="What can we help you find?"
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                />
+              </div>
+              <CartSidebar />
+              <Button variant="ghost" size="icon">
+                <User className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-slate-900 to-slate-800 text-white overflow-hidden pt-8">
+        <div className="absolute inset-0 bg-cover bg-center">
+          <video src="/pb_landingvid_03_q20.mp4" autoPlay loop muted className="w-full h-full object-cover" />
+        </div>
+        <div className="relative container mx-auto px-4 py-24 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">create.</h1>
+            <h2 className="text-2xl md:text-4xl font-semibold mb-8 text-slate-200">STEP INSIDE MUSIC INDUSTRY</h2>
+            <p className="text-lg md:text-xl text-slate-300 mb-12 max-w-2xl mx-auto">
+              Learn from industry professionals and master your craft with our comprehensive courses and premium
+              equipment.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 px-8 py-3 text-lg">
+                Find your course
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white hover:text-slate-900 px-8 py-3 text-lg bg-transparent"
+              >
+                Browse Products
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Topics */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Popular topics</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {[
+              "Vocals",
+              "DJ",
+              "Keyboards & Synthesizers",
+              "Music Theory",
+              "Basses",
+              "Production",
+              "Microphones & Audio Equipment",
+            ].map((topic) => (
+              <Card key={topic} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <h3 className="font-semibold text-lg">{topic}</h3>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Courses */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Courses to get you started</h2>
+            <p className="text-muted-foreground text-lg">Explore courses from experienced, real-world experts.</p>
+          </div>
+
+          <div className="flex justify-center mb-8">
+            <div className="flex gap-4">
+              <Button variant="default">Most popular</Button>
+              <Button variant="ghost">Trending</Button>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Music Theory Fundamentals",
+                instructor: "Dr. Robert Taylor",
+                duration: "9 total hours",
+                level: "Beginner",
+                rating: 0.0,
+                price: "$69.99",
+                image: "/music-theory-basics.png",
+                topics: ["Read Musical Notation", "Understand Scales and Keys", "Basic Harmony Concepts"],
+              },
+              {
+                title: "Bass Guitar Basics",
+                instructor: "Thomas Evans",
+                duration: "7 total hours",
+                level: "Beginner",
+                rating: 0.0,
+                price: "$54.99",
+                image: "/colorful-bass-guitars.png",
+                topics: ["Introduction to Bass Techniques", "Scales and Arpeggios", "Groove and Rhythm Basics"],
+              },
+              {
+                title: "Music Production Essentials",
+                instructor: "David Lee",
+                duration: "15.5 total hours",
+                level: "Intermediate",
+                rating: 0.0,
+                price: "$129.99",
+                image: "/placeholder-iirya.png",
+                topics: ["DAW Setup and Navigation", "Mixing and Mastering Basics", "Sound Design Techniques"],
+              },
+            ].map((course) => (
+              <Card key={course.title} className="overflow-hidden hover:shadow-lg transition-shadow py-0 cursor-pointer transform hover:scale-105 transition-transform duration-500">
+                <div className="relative">
+                  <img
+                    src={course.image || "/placeholder.svg"}
+                    alt={course.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <Button size="icon" className="absolute top-4 right-4 bg-black/50 hover:bg-black/70">
+                    <Play className="w-4 h-4" />
+                  </Button>
+                </div>
+                <CardContent className="py-2">
+                  <h3 className="font-bold text-xl mb-2 w-72">{course.title}</h3>
+                  <p className="text-muted-foreground mb-3">{course.instructor}</p>
+                  
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-orange-500 font-bold">{course.rating}</span>
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star key={star} className="w-4 h-4 text-orange-500" />
+                      ))}
+                    </div>
+                    <span className="text-muted-foreground">(0)</span>
+                  </div>
+                  <ul className="space-y-1 mb-6">
+                    {course.topics.map((topic) => (
+                      <li key={topic} className="text-sm text-muted-foreground flex items-center gap-2">
+                        <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                        {topic}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{course.price}</span>
+                    <Button>Add to cart</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Learn At Your Own Pace */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold mb-6">Learn At Your Own Pace</h2>
+          <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto">
+            We'll give you access to course content, videos, guides and even a knowledge quiz helping you to track your
+            progress as you go through the content.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Music Production Essentials",
+                instructor: "David Lee",
+                duration: "15.5 total hours",
+                level: "Intermediate",
+                rating: 0.0,
+                image: "/placeholder-iirya.png",
+              },
+              {
+                title: "Vocal Training for Beginners",
+                instructor: "Lisa Anderson",
+                duration: "6 total hours",
+                level: "Beginner",
+                rating: 0.0,
+                image: "/female-singer-blue.png",
+              },
+              {
+                title: "Bass Guitar Basics",
+                instructor: "Thomas Evans",
+                duration: "7 total hours",
+                level: "Beginner",
+                rating: 0.0,
+                image: "/colorful-bass-guitars.png",
+              },
+            ].map((course) => (
+              <Card key={course.title} className="overflow-hidden">
+                <img src={course.image || "/placeholder.svg"} alt={course.title} className="w-full h-48 object-cover" />
+                <CardContent className="p-6">
+                  <h3 className="font-bold text-xl mb-2">{course.title}</h3>
+                  <p className="text-muted-foreground mb-3">{course.instructor}</p>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                    <span>{course.duration}</span>
+                    <span>•</span>
+                    <span>{course.level}</span>
+                    <span>•</span>
+                    <span>Subtitles</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-orange-500 font-bold">{course.rating}</span>
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star key={star} className="w-4 h-4 text-orange-500" />
+                      ))}
+                    </div>
+                    <span className="text-muted-foreground">(0)</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="border-t border-gray-100 pt-8">
+            <div className="text-center">
+              <h3 className="font-bold text-4xl mt-25 mb-15">PARTNERS</h3>
+              <div className="flex flex-wrap justify-center items-center gap-25 opacity-60 mb-25">
+                <span className="text-sm font-medium"><Image src={ableton} alt="Ableton" width={100} height={100} /></span>
+                <span className="text-sm font-medium"><Image src={pioneer} alt="Pioneer DJ" width={100} height={100} /></span>
+                <span className="text-sm font-medium"><Image src={roland} alt="Roland" width={100} height={100} /></span>
+                <span className="text-sm font-medium"><Image src={universal} alt="Universal Audio" width={100} height={100} /></span>
+                <span className="text-sm font-medium"><Image src={waves} alt="Waves" width={100} height={100} /></span>
+              </div>
+            </div>
+      </div>  
+
+      {/* Footer */}
+      <footer className="bg-background border-t border-gray-100 py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="font-bold text-lg mb-4">Don't miss out!</h3>
+              <p className="text-muted-foreground mb-6">
+                Be the first to know about new products, featured content, exclusive offers and giveaways.
+              </p>
+              <div className="flex gap-2">
+                <Input placeholder="Enter your email address" className="flex-1" />
+                <Button>Sign up</Button>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-lg mb-4">Global</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Open Days & Tours
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Careers in the Music Industry
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Events
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Expert Teaching Staff
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Alumni
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-lg mb-4">Company</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Contact us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Newsroom
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-lg mb-4">Account</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    My Account
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Order Status
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground transition-colors">
+                    Returns & Exchanges
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </footer>
+
+      {/* Fixed Contact Button */}
+      <Button className="fixed bottom-6 right-6 rounded-full px-6 py-3 shadow-lg z-50" size="lg">
+        Contact
+      </Button>
+
+      {/* Chatbot Component */}
+      <Chatbot />
+    </div>
+  )
+}
