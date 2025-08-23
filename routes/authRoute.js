@@ -6,7 +6,6 @@ const { getCollections, ObjectId } = require('../utils/db');
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Authentication middleware
 const authenticate = async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -31,7 +30,6 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-// Register a new user
 router.post(
   '/signup',
   [
@@ -82,7 +80,6 @@ router.post(
   }
 );
 
-// Login user
 router.post(
   '/login',
   [
@@ -120,7 +117,6 @@ router.post(
   }
 );
 
-// Get user profile
 router.get(
   '/profile/:id',
   [query('id').isMongoId().withMessage('Invalid user ID')],
@@ -149,7 +145,6 @@ router.get(
   }
 );
 
-// Forgot password
 router.post(
   '/forgot-password',
   [body('email').isEmail().normalizeEmail().withMessage('Invalid email address')],
@@ -168,7 +163,6 @@ router.post(
         return res.status(404).json({ error: 'Email not found' });
       }
 
-      // Placeholder: Send reset email (implement email service like nodemailer)
       console.log(`Password reset requested for ${email}`);
       res.json({ message: 'Password reset instructions sent to your email' });
     } catch (error) {
@@ -178,5 +172,4 @@ router.post(
   }
 );
 
-// Export both the router and the authenticate middleware
 module.exports = { router, authenticate };

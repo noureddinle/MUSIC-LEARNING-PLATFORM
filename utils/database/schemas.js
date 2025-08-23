@@ -266,6 +266,7 @@ const SCHEMAS = {
       subcategory: 'string',
       price: 'number',
       salePrice: 'number',
+      discount: 'number',
       currency: 'string',
       inventory: {
         stock: 'number',
@@ -273,6 +274,7 @@ const SCHEMAS = {
         trackInventory: 'boolean'
       },
       media: {
+        thumbnail: 'string',
         images: ['string'],
         videos: ['string']
       },
