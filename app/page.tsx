@@ -1,21 +1,50 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Search, User, Menu, Star, Play } from "lucide-react"
 import Chatbot from "@/components/chatbot"
 import CartSidebar from "@/components/cart-sidebar"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import ableton from "@/public/ableton_logo_black.webp"
 import pioneer from "@/public/pioneer-dj.webp"
 import roland from "@/public/roland.webp"
 import universal from "@/public/ua_logo_stacked_black.webp"
 import waves from "@/public/waves-logo-black.webp"
+import { Product, Course } from "@/types/types" 
+import { fetchCourses, fetchProducts } from "@/lib/api"
+
 
 
 export default function HomePage() {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const [fetchedCourses, fetchedProducts] = await Promise.all([
+          fetchCourses(),
+          fetchProducts()
+        ]);
+        setCourses(fetchedCourses.courses);
+        setProducts(fetchedProducts.products);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation Header */}
       <header className="border-none bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -62,7 +91,6 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-slate-900 to-slate-800 text-white overflow-hidden pt-8">
         <div className="absolute inset-0 bg-cover bg-center">
           <video src="/pb_landingvid_03_q20.mp4" autoPlay loop muted className="w-full h-full object-cover" />
@@ -91,7 +119,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Popular Topics */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Popular topics</h2>
@@ -115,7 +142,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Courses */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -130,56 +156,21 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Music Theory Fundamentals",
-                instructor: "Dr. Robert Taylor",
-                duration: "9 total hours",
-                level: "Beginner",
-                rating: 0.0,
-                price: "$69.99",
-                image: "/music-theory-basics.png",
-                topics: ["Read Musical Notation", "Understand Scales and Keys", "Basic Harmony Concepts"],
-              },
-              {
-                title: "Bass Guitar Basics",
-                instructor: "Thomas Evans",
-                duration: "7 total hours",
-                level: "Beginner",
-                rating: 0.0,
-                price: "$54.99",
-                image: "/colorful-bass-guitars.png",
-                topics: ["Introduction to Bass Techniques", "Scales and Arpeggios", "Groove and Rhythm Basics"],
-              },
-              {
-                title: "Music Production Essentials",
-                instructor: "David Lee",
-                duration: "15.5 total hours",
-                level: "Intermediate",
-                rating: 0.0,
-                price: "$129.99",
-                image: "/placeholder-iirya.png",
-                topics: ["DAW Setup and Navigation", "Mixing and Mastering Basics", "Sound Design Techniques"],
-              },
-            ].map((course) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-10">
+            {courses.map((course) => (
               <Card key={course.title} className="overflow-hidden hover:shadow-lg transition-shadow py-0 cursor-pointer transform hover:scale-105 transition-transform duration-500">
                 <div className="relative">
                   <img
-                    src={course.image || "/placeholder.svg"}
+                    src={course.media.thumbnail || "/placeholder.svg"}
                     alt={course.title}
                     className="w-full h-48 object-cover"
                   />
-                  <Button size="icon" className="absolute top-4 right-4 bg-black/50 hover:bg-black/70">
-                    <Play className="w-4 h-4" />
-                  </Button>
                 </div>
                 <CardContent className="py-2">
                   <h3 className="font-bold text-xl mb-2 w-72">{course.title}</h3>
-                  <p className="text-muted-foreground mb-3">{course.instructor}</p>
-                  
+                  <p className="text-muted-foreground mb-3">{course.instructor.name}</p>
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="text-orange-500 font-bold">{course.rating}</span>
+                    <span className="text-orange-500 font-bold">{course.stats.avgRating}</span>
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <Star key={star} className="w-4 h-4 text-orange-500" />
@@ -188,15 +179,15 @@ export default function HomePage() {
                     <span className="text-muted-foreground">(0)</span>
                   </div>
                   <ul className="space-y-1 mb-6">
-                    {course.topics.map((topic) => (
+                    {course.programs.map((topic) => (
                       <li key={topic} className="text-sm text-muted-foreground flex items-center gap-2">
                         <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
                         {topic}
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{course.price}</span>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold">{course.pricing.price}</span>
                     <Button>Add to cart</Button>
                   </div>
                 </CardContent>
@@ -206,8 +197,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Learn At Your Own Pace */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-muted/30 bg-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">Learn At Your Own Pace</h2>
           <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -215,53 +205,29 @@ export default function HomePage() {
             progress as you go through the content.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Music Production Essentials",
-                instructor: "David Lee",
-                duration: "15.5 total hours",
-                level: "Intermediate",
-                rating: 0.0,
-                image: "/placeholder-iirya.png",
-              },
-              {
-                title: "Vocal Training for Beginners",
-                instructor: "Lisa Anderson",
-                duration: "6 total hours",
-                level: "Beginner",
-                rating: 0.0,
-                image: "/female-singer-blue.png",
-              },
-              {
-                title: "Bass Guitar Basics",
-                instructor: "Thomas Evans",
-                duration: "7 total hours",
-                level: "Beginner",
-                rating: 0.0,
-                image: "/colorful-bass-guitars.png",
-              },
-            ].map((course) => (
-              <Card key={course.title} className="overflow-hidden">
-                <img src={course.image || "/placeholder.svg"} alt={course.title} className="w-full h-48 object-cover" />
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl mb-2">{course.title}</h3>
-                  <p className="text-muted-foreground mb-3">{course.instructor}</p>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                    <span>{course.duration}</span>
-                    <span>•</span>
-                    <span>{course.level}</span>
-                    <span>•</span>
-                    <span>Subtitles</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-orange-500 font-bold">{course.rating}</span>
-                    <div className="flex">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="w-4 h-4 text-orange-500" />
-                      ))}
-                    </div>
-                    <span className="text-muted-foreground">(0)</span>
+          <div className="grid md:grid-cols-3 gap-8 px-10">
+            {products.map((product) => (
+              <Card key={product.name} className="overflow-hidden bg-white border-rounded-xs cursor-pointer transition-all duration-300 hover:shadow-lg max-w-sm relative">
+                <div className="absolute top-4 left-4 z-10">
+                  <span className="text-xs font-medium text-gray-600">
+                    Web Exclusive
+                  </span>
+                </div>
+                <div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden bg-white">
+                  <img
+                    src={product.media.thumbnail || "/placeholder.svg"}
+                    alt={product.name}
+                    className="w-full h-full object-contain transition-transform duration-300 hover:scale-105 p-8"
+                  />
+                </div>
+                <CardContent className="bg-white pt-4">
+                  <h3 className="font-normal text-base mb-1 text-gray-600 leading-tight text-left">
+                    {product.name}
+                  </h3>
+                  <div className="flex">
+                    <span className="text-muted-foreground">
+                      {product.colors} colors
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -285,8 +251,8 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="bg-background border-t border-gray-100 py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
+        <div className="container mx-auto px-10">
+          <div className="grid md:grid-cols-4 gap-8 items-center">
             <div>
               <h3 className="font-bold text-lg mb-4">Don't miss out!</h3>
               <p className="text-muted-foreground mb-6">
@@ -380,12 +346,10 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Fixed Contact Button */}
       <Button className="fixed bottom-6 right-6 rounded-full px-6 py-3 shadow-lg z-50" size="lg">
         Contact
       </Button>
 
-      {/* Chatbot Component */}
       <Chatbot />
     </div>
   )

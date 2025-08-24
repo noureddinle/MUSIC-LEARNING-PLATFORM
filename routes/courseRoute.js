@@ -1,165 +1,56 @@
 const express = require('express');
 const { param, query, validationResult } = require('express-validator');
-const { getCollections, ObjectId } = require('../utils/db');
-
+const { getCollections, ObjectId } = require('../utils/database/collections');
 const router = express.Router();
 
-// GET all courses
-router.get('/', async (req, res) => {
-  try {
-    const { courses } = await getCollections();
-    
-    // Manually convert query parameters to ensure they're the right type
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.max(1, parseInt(req.query.limit) || 10);
-    const skip = (page - 1) * limit;
-    const random = req.query.random === 'true';
-    
-    console.log('Query params (converted):', { 
-      page: `${page} (${typeof page})`, 
-      limit: `${limit} (${typeof limit})`,
-      skip: `${skip} (${typeof skip})`,
-      random 
-    });
-    
-    // Build aggregation pipeline
-    let pipeline = [
-      {
-        $lookup: {
-          from: 'ratings',
-          localField: '_id',
-          foreignField: 'courseId',
-          as: 'courseRatings'
-        }
-      },
-      {
-        $addFields: {
-          averageRating: {
-            $cond: {
-              if: { $gt: [{ $size: '$courseRatings' }, 0] },
-              then: { $avg: '$courseRatings.rating' },
-              else: 0
-            }
-          },
-          totalRatings: { $size: '$courseRatings' },
-          enrolledCount: { $ifNull: ['$enrolledCount', 0] }
-        }
-      },
-      { $project: { courseRatings: 0 } }
-    ];
-    
-    // Add pagination or sampling - ensure numbers are integers
-    if (random) {
-      pipeline.push({ $sample: { size: limit } });
-    } else {
-      pipeline.push({ $skip: skip });
-      pipeline.push({ $limit: limit });
+router.get(
+  '/',
+  [
+    query('page').optional().isInt({ min: 1 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 100 }).toInt()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-    
-    console.log('Pipeline limit stage:', pipeline[pipeline.length - 1]);
-    
-    const courseList = await courses.aggregate(pipeline).toArray();
-    const total = await courses.countDocuments();
-    
-    console.log(`Found ${courseList.length} courses out of ${total} total`);
-    
-    res.json({ 
-      courses: courseList, 
-      total, 
-      page, 
-      limit 
-    });
-    
-  } catch (error) {
-    console.error('Get courses error:', error);
-    res.status(500).json({ 
-      error: 'Internal server error', 
-      message: error.message 
-    });
+    const { courses } = await getCollections();
+    try {
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 10;
+      const skip = (page - 1) * limit;
+      const courseList = await courses.find().sort({ createdAt: -1 }).skip(skip).limit(limit).toArray();
+      const total = await courses.countDocuments();
+      res.json({ courses: courseList, total, page, limit });
+    } catch (error) {
+      console.error('Get courses error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
-});
+);
 
-// GET single course by ID
-router.get('/:id', async (req, res) => {
-  try {
-    // Validate ObjectId format manually
-    const courseIdString = req.params.id;
-    if (!/^[0-9a-fA-F]{24}$/.test(courseIdString)) {
-      return res.status(400).json({ 
-        error: 'Invalid course ID format',
-        message: 'Course ID must be a valid 24-character hex string'
-      });
+router.get(
+  '/:id',
+  [
+    param('id').isMongoId().withMessage('Invalid course ID')
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-    
     const { courses } = await getCollections();
-    const courseId = new ObjectId(courseIdString);
-    
-    console.log('Searching for course with ID:', courseId);
-    
-    const courseResult = await courses.aggregate([
-      { $match: { _id: courseId } },
-      {
-        $lookup: {
-          from: 'ratings',
-          localField: '_id',
-          foreignField: 'courseId',
-          as: 'courseRatings'
-        }
-      },
-      {
-        $addFields: {
-          averageRating: {
-            $cond: {
-              if: { $gt: [{ $size: '$courseRatings' }, 0] },
-              then: { $avg: '$courseRatings.rating' },
-              else: 0
-            }
-          },
-          totalRatings: { $size: '$courseRatings' },
-          enrolledCount: { $ifNull: ['$enrolledCount', 0] }
-        }
-      },
-      { $project: { courseRatings: 0 } }
-    ]).toArray();
-    
-    console.log('Aggregation result:', {
-      found: courseResult.length,
-      courseId: courseIdString
-    });
-    
-    if (courseResult.length === 0) {
-      return res.status(404).json({ 
-        error: 'Course not found',
-        message: `No course found with ID: ${courseIdString}`
-      });
+    try {
+      const course = await courses.findOne({ _id: new ObjectId(req.params.id) });
+      if (!course) {
+        return res.status(404).json({ error: 'Course not found' });
+      }
+      res.json(course);
+    } catch (error) {
+      console.error('Get course by ID error:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-    
-    const course = courseResult[0];
-    console.log('Returning course:', {
-      id: course._id,
-      title: course.title,
-      hasRating: !!course.averageRating,
-      rating: course.averageRating
-    });
-    
-    res.json(course);
-    
-  } catch (error) {
-    console.error('Get course by ID error:', error);
-    
-    // Handle MongoDB ObjectId errors
-    if (error.message.includes('ObjectId')) {
-      return res.status(400).json({
-        error: 'Invalid course ID',
-        message: 'The provided course ID format is invalid'
-      });
-    }
-    
-    res.status(500).json({ 
-      error: 'Internal Server Error',
-      message: error.message 
-    });
   }
-});
+);
 
 module.exports = router;

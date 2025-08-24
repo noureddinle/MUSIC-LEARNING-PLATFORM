@@ -1,6 +1,6 @@
 const express = require('express');
 const { param, query, validationResult } = require('express-validator');
-const { getCollections, ObjectId } = require('../utils/database/connection');
+const { getCollections, ObjectId } = require('../utils/database/collections');
 const router = express.Router();
 
 router.get(

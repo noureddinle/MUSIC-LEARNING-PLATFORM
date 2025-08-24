@@ -268,6 +268,7 @@ const SCHEMAS = {
       salePrice: 'number',
       discount: 'number',
       currency: 'string',
+      colors: ['string'],
       inventory: {
         stock: 'number',
         sku: 'string',

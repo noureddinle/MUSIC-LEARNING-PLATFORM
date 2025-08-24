@@ -1,4 +1,4 @@
-const { connectDB } = require('../connection');
+const { connectDB } = require('./connection');
 
 async function getCollections() {
   const db = await connectDB();
