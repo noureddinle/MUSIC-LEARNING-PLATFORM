@@ -22,7 +22,7 @@ Authentication: JSON Web Tokens (JWT) for user authentication
 Installation
 To run the Music Learning Platform locally, follow these steps:
 
-Clone the repository:git clone https://github.com/your-username/music-learning-platform.git
+Clone the repository:git clone https://github.com/noureddinle/MUSIC_LEARNING-PLATFORM
 
 
 Navigate to the project directory:cd music-learning-platform
