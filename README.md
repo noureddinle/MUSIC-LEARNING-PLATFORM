@@ -59,7 +59,6 @@ Browse available courses and tools, enroll in courses, or purchase items using S
 Track your progress through the user dashboard.
 Explore subscription options for unlimited access to courses.
 
-Live Demo: [Link to deployed site, if applicable]Screenshots:
 Project Structure
 music-learning-platform/
 ├── components/        # Reusable React components
