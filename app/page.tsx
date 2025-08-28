@@ -13,8 +13,9 @@ import pioneer from "@/public/pioneer-dj.webp"
 import roland from "@/public/roland.webp"
 import universal from "@/public/ua_logo_stacked_black.webp"
 import waves from "@/public/waves-logo-black.webp"
-import { Product, Course } from "@/types/types" 
+import { Product, Course } from "@/lib/types" 
 import { fetchCourses, fetchProducts } from "@/lib/api"
+import { PathwayCards } from "@/components/program-card"
 
 
 
@@ -142,59 +143,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Courses to get you started</h2>
-            <p className="text-muted-foreground text-lg">Explore courses from experienced, real-world experts.</p>
-          </div>
-
-          <div className="flex justify-center mb-8">
-            <div className="flex gap-4">
-              <Button variant="default">Most popular</Button>
-              <Button variant="ghost">Trending</Button>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-10">
-            {courses.map((course) => (
-              <Card key={course.title} className="overflow-hidden hover:shadow-lg transition-shadow py-0 cursor-pointer transform hover:scale-105 transition-transform duration-500">
-                <div className="relative">
-                  <img
-                    src={course.media.thumbnail || "/placeholder.svg"}
-                    alt={course.title}
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-                <CardContent className="py-2">
-                  <h3 className="font-bold text-xl mb-2 w-72">{course.title}</h3>
-                  <p className="text-muted-foreground mb-3">{course.instructor.name}</p>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-orange-500 font-bold">{course.stats.avgRating}</span>
-                    <div className="flex">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="w-4 h-4 text-orange-500" />
-                      ))}
-                    </div>
-                    <span className="text-muted-foreground">(0)</span>
-                  </div>
-                  <ul className="space-y-1 mb-6">
-                    {course.programs.map((topic) => (
-                      <li key={topic} className="text-sm text-muted-foreground flex items-center gap-2">
-                        <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
-                        {topic}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold">{course.pricing.price}</span>
-                    <Button>Add to cart</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+      <section>
+        <PathwayCards />
       </section>
 
       <section className="py-16 bg-muted/30 bg-white">

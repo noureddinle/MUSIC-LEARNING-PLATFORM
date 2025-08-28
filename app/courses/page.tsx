@@ -1,11 +1,27 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, ShoppingCart, User, Menu, Star, Play, Filter, Grid, List } from "lucide-react"
 import Chatbot from "@/components/chatbot"
+import { Course } from "@/lib/types"
+import { fetchCourses } from "@/lib/api"
+import { useEffect, useState } from "react"
 
 export default function CoursesPage() {
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  useEffect(() => {
+    const loadCourses = async () => {
+      const fetchedCourses = await fetchCourses();
+      setCourses(fetchedCourses.courses);
+    };
+
+    loadCourses();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation Header */}
@@ -95,125 +111,40 @@ export default function CoursesPage() {
       </section>
 
       {/* Course Grid */}
-      <section className="py-12">
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Music Theory Fundamentals",
-                instructor: "Dr. Robert Taylor",
-                duration: "9 total hours",
-                level: "Beginner",
-                rating: 4.8,
-                reviews: 1247,
-                price: "$69.99",
-                image: "/music-theory-basics.png",
-                topics: ["Read Musical Notation", "Understand Scales and Keys", "Basic Harmony Concepts"],
-                bestseller: true,
-              },
-              {
-                title: "Bass Guitar Basics",
-                instructor: "Thomas Evans",
-                duration: "7 total hours",
-                level: "Beginner",
-                rating: 4.6,
-                reviews: 892,
-                price: "$54.99",
-                image: "/colorful-bass-guitars.png",
-                topics: ["Introduction to Bass Techniques", "Scales and Arpeggios", "Groove and Rhythm Basics"],
-              },
-              {
-                title: "Music Production Essentials",
-                instructor: "David Lee",
-                duration: "15.5 total hours",
-                level: "Intermediate",
-                rating: 4.9,
-                reviews: 2156,
-                price: "$129.99",
-                image: "/placeholder-iirya.png",
-                topics: ["DAW Setup and Navigation", "Mixing and Mastering Basics", "Sound Design Techniques"],
-                bestseller: true,
-              },
-              {
-                title: "Vocal Training for Beginners",
-                instructor: "Lisa Anderson",
-                duration: "6 total hours",
-                level: "Beginner",
-                rating: 4.7,
-                reviews: 1543,
-                price: "$39.99",
-                image: "/female-singer-blue.png",
-                topics: ["Breathing Techniques", "Vocal Warm-ups", "Pitch Control"],
-              },
-              {
-                title: "DJ Fundamentals",
-                instructor: "Sarah Johnson",
-                duration: "8 total hours",
-                level: "Beginner",
-                rating: 4.5,
-                reviews: 678,
-                price: "$79.99",
-                image: "/placeholder-iirya.png",
-                topics: ["Beatmatching", "Mixing Techniques", "Equipment Setup"],
-              },
-              {
-                title: "Synthesizer Sound Design",
-                instructor: "Oliver Brooks",
-                duration: "12 total hours",
-                level: "Advanced",
-                rating: 4.8,
-                reviews: 934,
-                price: "$149.99",
-                image: "/placeholder-iirya.png",
-                topics: ["Oscillator Programming", "Filter Design", "Modulation Techniques"],
-              },
-            ].map((course) => (
-              <Card key={course.title} className="overflow-hidden hover:shadow-lg transition-shadow">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-10">
+            {courses.map((course) => (
+              <Card key={course.title} className="overflow-hidden hover:shadow-lg transition-shadow py-0 cursor-pointer transform hover:scale-105 transition-transform duration-500">
                 <div className="relative">
                   <img
-                    src={course.image || "/placeholder.svg"}
+                    src={course.media.thumbnail || "/placeholder.svg"}
                     alt={course.title}
                     className="w-full h-48 object-cover"
                   />
-                  <Button size="icon" className="absolute top-4 right-4 bg-black/50 hover:bg-black/70">
-                    <Play className="w-4 h-4" />
-                  </Button>
-                  {course.bestseller && (
-                    <Badge className="absolute top-4 left-4 bg-orange-500 hover:bg-orange-600">Bestseller</Badge>
-                  )}
                 </div>
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl mb-2">{course.title}</h3>
-                  <p className="text-muted-foreground mb-3">{course.instructor}</p>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                    <span>{course.duration}</span>
-                    <span>•</span>
-                    <span>{course.level}</span>
-                    <span>•</span>
-                    <span>Subtitles</span>
-                  </div>
+                <CardContent className="py-2">
+                  <h3 className="font-bold text-xl mb-2 w-72">{course.title}</h3>
+                  <p className="text-muted-foreground mb-3">{course.instructor.name}</p>
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="text-orange-500 font-bold">{course.rating}</span>
+                    <span className="text-orange-500 font-bold">{course.stats.avgRating}</span>
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className={`w-4 h-4 ${star <= Math.floor(course.rating) ? "text-orange-500 fill-orange-500" : "text-gray-300"}`}
-                        />
+                        <Star key={star} className="w-4 h-4 text-orange-500" />
                       ))}
                     </div>
-                    <span className="text-muted-foreground">({course.reviews})</span>
+                    <span className="text-muted-foreground">(0)</span>
                   </div>
                   <ul className="space-y-1 mb-6">
-                    {course.topics.map((topic) => (
+                    {course.programs.map((topic) => (
                       <li key={topic} className="text-sm text-muted-foreground flex items-center gap-2">
                         <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
                         {topic}
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{course.price}</span>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold">{course.pricing.price}</span>
                     <Button>Add to cart</Button>
                   </div>
                 </CardContent>

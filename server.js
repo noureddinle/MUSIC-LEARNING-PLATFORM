@@ -20,6 +20,9 @@ async function startServer() {
     const courseRoutes = require('./routes/courseRoute');
     app.use('/api/courses', courseRoutes);
 
+    const programRoutes = require('./routes/programRoute');
+    app.use('/api/programs', programRoutes);
+
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     }).on('error', (error) => {

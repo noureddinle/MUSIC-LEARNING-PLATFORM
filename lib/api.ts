@@ -1,4 +1,4 @@
-import { Course, Product, MusicProgram } from '../types/types';
+import { Course, Product, MusicProgram } from './types';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function fetchCourses(page: number = 1, limit: number = 10): Promise<{ courses: Course[], total: number, page: number, limit: number }> {
@@ -34,8 +34,8 @@ export async function fetchProduct(id: string): Promise<Product> {
   return response.json();
 }
 
-export async function fetchMusicPrograms(): Promise<MusicProgram[]> {
-  const response = await fetch(`${API_BASE_URL}/api/music-programs`);
+export async function fetchMusicPrograms(page: number = 1, limit: number = 10): Promise<{ programs: MusicProgram[], total: number, page: number, limit: number }> {
+  const response = await fetch(`${API_BASE_URL}/api/programs`);
   if (!response.ok) {
     throw new Error(`Failed to fetch music programs: ${response.statusText}`);
   }
@@ -43,7 +43,7 @@ export async function fetchMusicPrograms(): Promise<MusicProgram[]> {
 }
 
 export async function fetchMusicProgram(id: string): Promise<MusicProgram> {
-  const response = await fetch(`${API_BASE_URL}/api/music-programs/${id}`);
+  const response = await fetch(`${API_BASE_URL}/api/programs/${id}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch music program: ${response.statusText}`);
   }

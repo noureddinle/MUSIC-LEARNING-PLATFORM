@@ -1,11 +1,34 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, ShoppingCart, User, Menu, Filter, Grid, List } from "lucide-react"
 import Chatbot from "@/components/chatbot"
+import { Product } from "@/lib/types"
+import { useState, useEffect } from "react"
+import { fetchProduct, fetchProducts } from "@/lib/api"
 
 export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const fetchedProducts = await fetchProducts()
+        setProducts(fetchedProducts.products)
+      } catch (error) {
+        console.error("Error fetching products:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProducts()
+  }, [])
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation Header */}
@@ -98,57 +121,12 @@ export default function ProductsPage() {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                name: "AKAI MPK MINI",
-                colors: "4 Colors",
-                price: "1749.99",
-                image: "/placeholder-iirya.png",
-                sale: true,
-                colorOptions: ["#f3f4f6", "#9ca3af", "#374151", "#1f2937"],
-              },
-              {
-                name: "AKAI APC 64",
-                colors: "2 Colors",
-                price: "1749.99",
-                image: "/placeholder-iirya.png",
-                sale: true,
-                colorOptions: ["#000000", "#374151"],
-              },
-              {
-                name: "Roland TR-808",
-                colors: "1 Color",
-                price: "899.99",
-                image: "/placeholder-iirya.png",
-                colorOptions: ["#ef4444"],
-              },
-              {
-                name: "Native Instruments Maschine",
-                colors: "2 Colors",
-                price: "599.99",
-                image: "/placeholder-iirya.png",
-                colorOptions: ["#000000", "#ffffff"],
-              },
-              {
-                name: "Ableton Push 3",
-                colors: "1 Color",
-                price: "799.99",
-                image: "/placeholder-iirya.png",
-                colorOptions: ["#000000"],
-              },
-              {
-                name: "Pioneer DDJ-SX3",
-                colors: "1 Color",
-                price: "1299.99",
-                image: "/placeholder-iirya.png",
-                colorOptions: ["#000000"],
-              },
-            ].map((product) => (
-              <Card key={product.name} className="overflow-hidden hover:shadow-lg transition-shadow">
+            {products.map((product) => (
+              <Card key={product.name} className="overflow-hidden hover:shadow-lg transition-shadow py-0 border-none">
                 <div className="relative">
-                  {product.sale && <Badge className="absolute top-4 left-4 bg-red-500 hover:bg-red-600">SALE</Badge>}
+                  {product.discount && <Badge className="absolute top-4 left-4 bg-red-500 hover:bg-red-600">SALE</Badge>}
                   <img
-                    src={product.image || "/placeholder.svg"}
+                    src={product.media.thumbnail || "/placeholder.svg"}
                     alt={product.name}
                     className="w-full h-64 object-cover bg-muted"
                   />
@@ -158,13 +136,15 @@ export default function ProductsPage() {
                   <p className="text-muted-foreground mb-4">{product.colors}</p>
 
                   <div className="flex gap-2 mb-6">
-                    {product.colorOptions.map((color, index) => (
-                      <div
-                        key={index}
-                        className="w-6 h-6 rounded-full border-2 border-border"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
+                    {product.colors && Array.isArray(product.colors) ? (
+                      product.colors.map((color, index) => (
+                        <div
+                          key={index}
+                          className="w-6 h-6 rounded-full border-2 border-border"
+                          style={{ backgroundColor: color }}
+                        />
+                      ))
+                    ) : null}
                   </div>
 
                   <div className="flex items-center justify-between">
