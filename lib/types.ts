@@ -59,7 +59,7 @@ export interface Pricing {
   type: string;
   price: number;
   currency?: string;
-  discountPrice?: number;
+  discountPercent?: number;
   subscriptionTiers?: string[];
   installments?: number; 
 }
@@ -308,7 +308,8 @@ export interface Shipping {
 }
 
 export interface Product {
-  _id: string; 
+  id: string;
+  slug: string;
   name: string;
   description: string;
   brand: string;
@@ -317,13 +318,16 @@ export interface Product {
   subcategory: string;
   price: number;
   salePrice?: number;
-  discount?: number;
+  discount: number;
   currency: string;
   inventory: Inventory;
   media: Media;
+  features: string[];
   specifications: Record<string, any>;
-  shipping: Shipping;
+  shipping: boolean;
+  warranty: string;
   isActive: boolean;
+  inStock: boolean;
   createdAt: string; 
 }
 

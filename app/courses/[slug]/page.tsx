@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, ShoppingCart, User, Star, Clock, Users, Award, ChevronDown, Heart, Music } from "lucide-react"
-import { Chatbot } from "@/components/chatbot"
+import { Search, ShoppingCart, User, Star, Clock, Users, Award, ChevronDown, Heart, Music, Bell, Menu } from "lucide-react"
 import { VideoPlayer } from "@/components/video-player"
 import { AuthModal } from "@/components/auth-modal"
 import { useState } from "react"
@@ -22,48 +21,66 @@ export default function CourseDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-white">
       {/* Navigation Header */}
-      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b border-gray-100 bg-white sticky top-0 z-50">
+        <div className="container mx-auto px-2 py-1">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-2">
-                <Music className="h-8 w-8 text-orange-500" />
-                <span className="text-2xl font-bold text-white">MusicLearn</span>
-              </div>
-              <nav className="hidden md:flex items-center gap-6">
-                <a href="/courses" className="text-white font-medium">
-                  Courses
-                </a>
-                <a href="/products" className="text-slate-300 hover:text-white transition-colors">
-                  Products
-                </a>
-                <a href="/contact" className="text-slate-300 hover:text-white transition-colors">
-                  Contact
-                </a>
-              </nav>
+            {/* Left side - Logo and navigation */}
+            <div className="flex items-center gap-2">
+              {/* Logo */}
+              <div className="text-lg font-bold">Logo</div>
+              {/* Navigation */}
+              
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2 w-80">
-                <Search className="w-4 h-4 text-slate-400" />
-                <Input
-                  placeholder="What can we help you find?"
-                  className="border-0 bg-transparent text-white placeholder:text-slate-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
+            {/* Center - Search bar */}
+            <div className="flex-1 max-w-lg mx-8 hidden md:block">
+              <div className="relative">
+                <div className="flex items-center bg-white border border-gray-200 rounded-full px-4 py-3">
+                  <Search className="w-5 h-5 text-gray-400 mr-3" />
+                  <input
+                    type="text"
+                    placeholder="music production"
+                    className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
+                  />
+                </div>
               </div>
-              <Button variant="ghost" size="icon" className="text-slate-300 hover:text-white">
-                <ShoppingCart className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-slate-300 hover:text-white"
-                onClick={() => setShowAuthModal(true)}
-              >
-                <User className="w-5 h-5" />
-              </Button>
+            </div>
+
+            {/* Right side - Navigation links and icons */}
+            <div className="flex items-center gap-6">
+              <nav className="hidden lg:flex items-center gap-6">
+                <a href="#" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
+                  Business
+                </a>
+                <a href="#" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
+                  My learning
+                </a>
+              </nav>
+              
+              {/* Icons */}
+              <div className="flex items-center gap-4">
+                <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                  <Heart className="w-5 h-5 text-gray-700" />
+                </button>
+                <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                  <ShoppingCart className="w-5 h-5 text-gray-700" />
+                </button>
+                <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                  <Bell className="w-5 h-5 text-gray-700" />
+                </button>
+                
+                {/* Profile */}
+                <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+                  <span className="text-white font-medium text-sm">J</span>
+                </div>
+                
+                {/* Mobile menu button */}
+                <button className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                  <Menu className="w-5 h-5 text-gray-700" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -79,8 +96,8 @@ export default function CourseDetailPage() {
                 <Badge className="bg-slate-800 text-slate-300">Music Theory</Badge>
                 <Badge className="bg-orange-600 text-white hover:bg-orange-700">Bestseller</Badge>
               </div>
-              <h1 className="text-4xl font-bold text-white mb-4">Music Theory Fundamentals</h1>
-              <p className="text-lg text-slate-300 mb-6">
+              <h1 className="text-4xl font-bold text-slate-900 mb-4">Music Theory Fundamentals</h1>
+              <p className="text-lg text-slate-600 mb-6">
                 Master the essential building blocks of music theory. Learn to read notation, understand scales, keys,
                 and harmony concepts that will enhance your musical understanding and performance.
               </p>
@@ -186,7 +203,7 @@ export default function CourseDetailPage() {
                       progress: 0,
                     },
                   ].map((section) => (
-                    <Card key={section.title} className="bg-slate-900 border-slate-800">
+                    <Card key={section.title} className="bg-white border-gray-200">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -294,16 +311,16 @@ export default function CourseDetailPage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-24 bg-slate-900 border-slate-800">
+            <Card className="sticky top-24 bg-white border-gray-200">
               <CardContent className="p-6">
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-white font-medium">Your Progress</span>
-                    <span className="text-orange-500 font-bold">{Math.round(courseProgress)}%</span>
+                    <span className="text-gray-700 font-medium">Your Progress</span>
+                    <span className="text-blue-500 font-bold">{Math.round(courseProgress)}%</span>
                   </div>
-                  <div className="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
+                  <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-orange-500 transition-all duration-500"
+                      className="h-full bg-blue-500 transition-all duration-500"
                       style={{ width: `${courseProgress}%` }}
                     />
                   </div>
@@ -313,7 +330,7 @@ export default function CourseDetailPage() {
                   <div className="w-full h-48 bg-slate-800 rounded-lg mb-4 flex items-center justify-center">
                     <span className="text-slate-400">Course Preview</span>
                   </div>
-                  <Button className="w-full mb-2 bg-orange-600 hover:bg-orange-700">Preview this course</Button>
+                  <Button className="w-full mb-2 bg-green-600 hover:bg-green-700">Preview this course</Button>
                 </div>
 
                 <Tabs defaultValue="personal" className="mb-6">
@@ -468,7 +485,6 @@ export default function CourseDetailPage() {
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
       {/* Chatbot Component */}
-      <Chatbot />
     </div>
   )
 }

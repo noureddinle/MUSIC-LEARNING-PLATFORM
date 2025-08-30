@@ -47,7 +47,7 @@ export function PathwayCards() {
   }
 
   return (
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">Music Learning Pathways</h2>
@@ -80,7 +80,6 @@ export function PathwayCards() {
                         {program.difficulty}
                       </Badge>
                     </div>
-                    {/* Content wrapper with hover visibility */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <CardTitle className="text-xl font-heading font-bold mb-2 text-white group-hover:text-primary-foreground transition-colors">
                         {program.title}
