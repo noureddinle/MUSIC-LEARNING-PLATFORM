@@ -8,11 +8,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, ShoppingCart, User, Star, Clock, Users, Award, ChevronDown, Heart, Music, Bell, Menu } from "lucide-react"
 import { VideoPlayer } from "@/components/video-player"
 import { AuthModal } from "@/components/auth-modal"
-import { useState } from "react"
+import { Course } from "@/lib/types"
+import { fetchCourse } from "@/lib/api"
+import { useState, useEffect } from "react"
+import { useParams } from "next/navigation"
 
 export default function CourseDetailPage() {
   const [showAuthModal, setShowAuthModal] = useState(false)
-  const [courseProgress, setCourseProgress] = useState(25) // Mock progress
+  const [courseProgress, setCourseProgress] = useState(25)
+  const params = useParams()
+  const [course, setCourse] = useState<Course | null>(null)
+  const [courseId, setCourseId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const courseData = await fetchCourse(courseId)
+      setCourse(courseData)
+    }
+
+    fetchData()
+  }, [courseId])
 
   const handleProgressUpdate = (progress: number) => {
     setCourseProgress(progress)
@@ -85,12 +100,12 @@ export default function CourseDetailPage() {
           </div>
         </div>
       </header>
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {/* Course Header */}
+      {courseData && (
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              {/* Course Header */}
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <Badge className="bg-slate-800 text-slate-300">Music Theory</Badge>
@@ -177,33 +192,7 @@ export default function CourseDetailPage() {
                     <span className="text-slate-400">4 sections • 12 lectures • 8h 0m total length</span>
                   </div>
 
-                  {[
-                    {
-                      title: "Core Concepts",
-                      lectures: 3,
-                      duration: "2h 0m",
-                      progress: 100,
-                    },
-                    {
-                      title: "Practical Examples",
-                      lectures: 3,
-                      duration: "2h 0m",
-                      progress: 67,
-                    },
-                    {
-                      title: "Hands-on Projects",
-                      lectures: 3,
-                      duration: "2h 0m",
-                      progress: 0,
-                    },
-                    {
-                      title: "Real-world Applications",
-                      lectures: 3,
-                      duration: "2h 0m",
-                      progress: 0,
-                    },
-                  ].map((section) => (
-                    <Card key={section.title} className="bg-white border-gray-200">
+                    <Card key={course.title} className="bg-white border-gray-200">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -316,12 +305,14 @@ export default function CourseDetailPage() {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-gray-700 font-medium">Your Progress</span>
-                    <span className="text-blue-500 font-bold">{Math.round(courseProgress)}%</span>
+                    <span className="text-slate-900 font-bold"
+                          style={{ color: "#8db9b4ff" }}
+                    >{Math.round(courseProgress)}%</span>
                   </div>
                   <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-blue-500 transition-all duration-500"
-                      style={{ width: `${courseProgress}%` }}
+                      className="h-full transition-all duration-500"
+                      style={{ width: `${courseProgress}%`, backgroundColor: "#CDD7D6" }}
                     />
                   </div>
                 </div>
@@ -330,20 +321,19 @@ export default function CourseDetailPage() {
                   <div className="w-full h-48 bg-slate-800 rounded-lg mb-4 flex items-center justify-center">
                     <span className="text-slate-400">Course Preview</span>
                   </div>
-                  <Button className="w-full mb-2 bg-green-600 hover:bg-green-700">Preview this course</Button>
                 </div>
 
                 <Tabs defaultValue="personal" className="mb-6">
-                  <TabsList className="grid w-full grid-cols-2 bg-slate-800">
+                  <TabsList className="grid w-full grid-cols-2 bg-white border border-gray-100">
                     <TabsTrigger
                       value="personal"
-                      className="text-slate-300 data-[state=active]:text-white data-[state=active]:bg-slate-700"
+                      className="text-slate-700 data-[state=active]:text-white data-[state=active]:bg-slate-700 transition-colors duration-400"
                     >
                       Personal
                     </TabsTrigger>
                     <TabsTrigger
                       value="teams"
-                      className="text-slate-300 data-[state=active]:text-white data-[state=active]:bg-slate-700"
+                      className="text-slate-700 data-[state=active]:text-white data-[state=active]:bg-slate-700 transition-colors duration-400"
                     >
                       Teams
                     </TabsTrigger>
